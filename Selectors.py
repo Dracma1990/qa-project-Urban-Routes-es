@@ -19,4 +19,4 @@ blanket_button = (By.XPATH, "//div[@class='r-sw-label' and text ()='Manta y pañ
 ice_cream_label = (By.XPATH, "//div[@class='r-counter-label' and text ()='Helado']")
 slider_button = (By.CSS_SELECTOR, "span.slider.round")
 plus_button = (By.CSS_SELECTOR, "counter-plus")
-final_blue_button = (By.CSS_SELECTOR, "span.smart-button-main")
+car_modal_title = (By.CSS_SELECTOR, "span.smart-button-main")

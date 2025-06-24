@@ -7,16 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriver, WebDriverWait
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-import UrbanRoutesPage
+from UrbanRoutesPage import UrbanRoutesPage
 
 from data import message_for_driver
-from main import click_on_plus_button, get_ice_cream_count, get_blanket_selected
-
-driver = webdriver.Chrome()
 
 class TestUrbanRoutes:
-
-    driver = None
 
     @classmethod
     def setup_class(cls):
@@ -25,10 +20,12 @@ class TestUrbanRoutes:
         options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
 
         cls.driver = webdriver.Chrome(service=Service(), options=options)
+        cls.driver.timeouts.implicit_wait(5)
+        #cls.routes_page = UrbanRoutesPage(cls.driver)
 
     def test_set_route(self):
         self.driver.get(data.urban_routes_url)
-        routes_page = UrbanRoutesPage
+        routes_page = UrbanRoutesPage(self.driver)
         address_from = data.address_from
         address_to = data.address_to
         routes_page.set_route(address_from, address_to)
@@ -40,7 +37,7 @@ class TestUrbanRoutes:
         routes_page = UrbanRoutesPage(self.driver)
         routes_page.click_on_request_taxi_button()
         routes_page.click_on_comfort_rate_icon()
-        assert "active" in get_supportive_class()
+        assert routes_page.get_comfort_rate_icon.click()
 
     def test_set_phone_number(self):
         self.test_set_route()
@@ -99,8 +96,12 @@ class TestUrbanRoutes:
         self.test_message_for_driver()
         self.test_request_blanket_and_tissues()
         self.test_request_2_ice_creams()
-        assert routes_page.get_car_modal_title() == "Buscar automóvil"
+        assert get_car_modal_title() == "Buscar automóvil"
 
     @classmethod
-    def teardown_class(cls):
-        cls.driver.quit()
+    def setup_class(cls):
+        # no lo modifiques, ya que necesitamos un registro adicional habilitado para recuperar el código de confirmación del teléfono
+        options = Options()
+        options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
+
+        cls.driver = webdriver.Chrome(service=Service(), options=options)

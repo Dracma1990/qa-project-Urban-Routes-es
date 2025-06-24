@@ -10,18 +10,9 @@ from selenium.webdriver.chrome.options import Options
 
 from data import message_for_driver
 
-driver = webdriver.Chrome()
 
 
 class UrbanRoutesPage:
-
-    @classmethod
-    def setup_class(cls):
-        # no lo modifiques, ya que necesitamos un registro adicional habilitado para recuperar el código de confirmación del teléfono
-        options = Options()
-        options.set_capability("goog:loggingPrefs", {'performance': 'ALL'})
-
-        cls.driver = webdriver.Chrome(service=Service(), options=options)
 
     def __init__(self, driver):
         self.driver = driver
@@ -63,7 +54,6 @@ class UrbanRoutesPage:
 
     def click_on_comfort_rate_icon(self):
         self.get_comfort_rate_icon().click()
-
 
     def get_phone_field_button(self):
         return WebDriverWait(self.driver, 5).until(
@@ -130,15 +120,15 @@ class UrbanRoutesPage:
         ).send_keys(data.card_code)
 
     def scroll_to_message_for_driver_button(self):
-        driver.execute_script("arguments[0].scrollIntoView();", message_for_driver)
+        self.driver.execute_script("arguments[0].scrollIntoView();", message_for_driver)
 
     def get_message_for_driver_button(self):
-            return WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(Selectors.message_for_driver_button)
-            )
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.message_for_driver_button)
+        )
 
     def click_on_message_for_driver_button(self):
-            self.get_message_for_driver_button().click()
+        self.get_message_for_driver_button().click()
 
     def get_message_for_driver_text(self):
         return self.driver.find_element(*Selectors.message_for_driver_button).get_attribute('value')
@@ -149,30 +139,75 @@ class UrbanRoutesPage:
         ).send_keys(data.message_for_driver)
 
     def scroll_to_reqs_button(self):
-        driver.execute_script("arguments[0].scrollIntoView(); ", Selectors.reqs_button)
+        self.driver.execute_script("arguments[0].scrollIntoView(); ", Selectors.reqs_button)
 
     def get_reqs_button(self):
-            return WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(Selectors.reqs_button)
-            )
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.reqs_button)
+        )
 
     def click_on_reqs_button(self):
-            self.reqs_button.click()
+        self.reqs_button.click()
 
     def get_slider_button(self):
-            return WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(Selectors.slider_button)
-            )
-
-    def click_on_slider_button(self):
-            Selectors.slider_button.click()
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.slider_button)
+        )
 
     def get_plus_button(self):
-            return WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(Selectors.plus_button)
-            )
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.plus_button)
+        )
 
-    def get_final_blue_button(self):
-            return WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable(Selectors.final_blue_button)
-            )
+    def car_modal_title(self):
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.car_modal_title)
+        )
+
+    def get_blanket_selected(self):
+        Selectors.blanket_button.__getattribute__(Selectors, __class='r-sw-label')
+
+    def get_supportive_class(self):
+        Selectors.comfort_rate_icon.__getattribute__(Selectors, __class='tcard-title')
+
+    # no modificar
+    def retrieve_phone_code(driver) -> str:
+
+        import json
+        import time
+        from selenium.common import WebDriverException
+        code = None
+        for i in range(10):
+            try:
+                logs = [log["message"] for log in driver.get_log('performance') if log.get("message")
+                        and 'api/v1/number?number' in log.get("message")]
+                for log in reversed(logs):
+                    message_data = json.loads(log)["message"]
+                    body = driver.execute_cdp_cmd('Network.getResponseBody',
+                                                  {'requestId': message_data["params"]["requestId"]})
+                    code = ''.join([x for x in body['body'] if x.isdigit()])
+            except WebDriverException:
+                time.sleep(1)
+                continue
+            if not code:
+                raise Exception("No se encontró el código de confirmación del teléfono.\n"
+                                "Utiliza 'retrieve_phone_code' solo después de haber solicitado el código en tu aplicación.")
+            return code
+        return None
+
+
+    def get_blanket_selected():
+        return None
+
+    def click_on_plus_button():
+        Selectors.plus_button.click()
+
+    def get_ice_cream_count():
+        # Selectors.ice_cream_label.__getattribute__(Selectors, __class='r-counter-label')
+        return self.driver.find_element(*Selectors.ice_cream_label).get_text
+
+    def click_on_final_blue_button():
+        Selectors.car_modal_title.click()
+
+    def click_on_slider_button():
+        Selectors.slider_button.click()
