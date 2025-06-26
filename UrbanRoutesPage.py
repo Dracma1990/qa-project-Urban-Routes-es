@@ -50,21 +50,26 @@ class UrbanRoutesPage:
     def get_comfort_rate_icon(self):
         return WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(Selectors.comfort_rate_icon)
-        )
+        ).text
 
     def click_on_comfort_rate_icon(self):
-        self.get_comfort_rate_icon().click()
+        WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.comfort_rate_icon)
+        ).click()
 
-    def get_phone_field_button(self):
+    def check_phone_field_button_enable(self):
         return WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(Selectors.phone_field_button)
-        )
+        ).is_enabled()
 
     def click_on_phone_field_button(self):
-        self.get_phone_field_button().click()
+        WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.phone_field_button)
+        ).click()
+
 
     def get_phone_field_text(self):
-        return self.driver.find_element(*Selectors.phone_field).get_attribute('value')
+        return self.driver.find_element(*Selectors.phone_field).get_property('value')
 
     def set_phone_field_text(self, phone_number):
         WebDriverWait(self.driver, 5).until(
@@ -120,7 +125,8 @@ class UrbanRoutesPage:
         ).send_keys(data.card_code)
 
     def scroll_to_message_for_driver_button(self):
-        self.driver.execute_script("arguments[0].scrollIntoView();", message_for_driver)
+        ue_mss_driver = self.driver.find_element(*Selectors.message_for_driver_button)
+        self.driver.execute_script("arguments[0].scrollIntoView();", ue_mss_driver)
 
     def get_message_for_driver_button(self):
         return WebDriverWait(self.driver, 5).until(
@@ -159,16 +165,22 @@ class UrbanRoutesPage:
             EC.element_to_be_clickable(Selectors.plus_button)
         )
 
-    def car_modal_title(self):
+    def get_car_modal_title(self):
         return WebDriverWait(self.driver, 5).until(
             EC.element_to_be_clickable(Selectors.car_modal_title)
         )
 
     def get_blanket_selected(self):
-        Selectors.blanket_button.__getattribute__(Selectors, __class='r-sw-label')
+        #Selectors.blanket_button.__getattribute__(Selectors, __class='r-sw-label')
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.blanket_button)
+        ).is_selected()
 
     def get_supportive_class(self):
-        Selectors.comfort_rate_icon.__getattribute__(Selectors, __class='tcard-title')
+        #Selectors.comfort_rate_icon.__getattribute__(Selectors, __class='tcard-title')
+        return WebDriverWait(self.driver, 5).until(
+            EC.element_to_be_clickable(Selectors.comfort_rate_icon)
+        ).is_selected()
 
     # no modificar
     def retrieve_phone_code(driver) -> str:
@@ -202,9 +214,9 @@ class UrbanRoutesPage:
     def click_on_plus_button():
         Selectors.plus_button.click()
 
-    def get_ice_cream_count():
-        # Selectors.ice_cream_label.__getattribute__(Selectors, __class='r-counter-label')
-        return self.driver.find_element(*Selectors.ice_cream_label).get_text
+    def get_ice_cream_count(self):
+        #Selectors.ice_cream_label.__getattribute__(Selectors, __class='r-counter-label')
+        return self.driver.find_element(*Selectors.ice_cream_label).text
 
     def click_on_final_blue_button():
         Selectors.car_modal_title.click()
