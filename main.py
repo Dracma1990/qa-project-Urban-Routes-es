@@ -224,7 +224,7 @@ class TestUrbanRoutes:
         wait = WebDriverWait(self.driver, 10)
         routes_page = UrbanRoutesPage(self.driver)
 
-        plus_button = wait.until(EC.element_to_be_clickable(UrbanRoutesLocators.ICE_CREAM_PLUS_BUTTON))
+        plus_button = wait.until(EC.element_to_be_clickable(UrbanRoutesLocatogit staturs.ICE_CREAM_PLUS_BUTTON))
         plus_button.click()
         time.sleep(0.5)  # espera corta para que la UI actualice
         plus_button.click()
